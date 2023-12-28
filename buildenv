@@ -26,10 +26,19 @@ export ZOPEN_COMP=CLANG
 ZOPEN_CONFIGURE="zopen_configure"
 ZOPEN_MAKE="zopen_build"
 ZOPEN_CHECK="zopen_check"
+ZOPEN_CLEAN="zopen_clean"
 
+
+# 20231228 at this point ZOSLIB_HOME does not exist
 
 zopen_configure() {
- # ORIG IGOR  python3 build/gen.py --zoslib-dir `pwd`/third_party/zoslib
+  # 20231228 at this point ZOSLIB_HOME does exist
+  # 20231228 ZOSLIB_HOME: /z/jd895801/zopen/usr/local/zopen/zoslib/zoslib-main.20231205_141501.zos
+  # 20231228 If gnport/gn subdir exists this is not called a second time when zopen build issued.
+  # 20231228 If gnport/gn subdir exists this is called after zopen_clean() when zopen build -f issued.
+  echo "********* TWO  *************"
+  echo "ZOSLIB_HOME: $ZOSLIB_HOME"
+  # ORIG IGOR  python3 build/gen.py --zoslib-dir `pwd`/third_party/zoslib
   python build/gen.py --zoslib-dir $ZOSLIB_HOME
 }
 zopen_build() {
@@ -37,6 +46,18 @@ zopen_build() {
 }
 zopen_check() {
   ./out/gn_unittests
+}
+# 20231218 Does this code need a clean?
+# 20231218 When this routine is called, the pwd is gnport/gn
+# I could not get it to repull gn dir
+# and it would fail when I tried to `zopen build -f` to
+# for a clean. It failed with no clean target specified?
+# Do I need a ZOPEN_CLEAN assignment above?
+zopen_clean() {
+  echo "gnport/buildenv:zopen_clean()"
+  echo "$ zopen build -f triggered this call"
+  echo "pwd: `pwd`"
+  git reset --hard
 }
 
 

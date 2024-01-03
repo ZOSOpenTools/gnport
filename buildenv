@@ -19,24 +19,54 @@ export ZOPEN_BUILD_LINE="DEV"
 #export ZOPEN_STABLE_DEPS="zoslib"
 export ZOPEN_RUNTIME_DEPS="bash"
 export ZOPEN_CATEGORIES="development"
-export ZOPEN_COMP=CLANG
+# If this is set, it will still use ibm-clang, even
+# if comp_clang is not specified as a dependecny.
+# It does this by zopen build auto adding comp_clang
+# as a dependency.
+#export ZOPEN_COMP=CLANG
+
+
+# Moving forward, comp_clang will use IBM C/C++ for Open Enterpise Languages on z/OS
+# https://epwt-www.mybluemix.net/software/support/trial/cst/programwebsite.wss?siteId=1803
+# this one is for open source projects only
+
+# Longer term, the compiler will migrate to the 1.Next compiler
+# https://epwt-www.mybluemix.net/software/support/trial/cst/programwebsite.wss?siteId=1990
+# this one is not limited by open source restrictions
 
 # These settings are for specifying custom build 
 # types other than configure and make.
 ZOPEN_CONFIGURE="zopen_configure"
 ZOPEN_MAKE="zopen_build"
 ZOPEN_CHECK="zopen_check"
+ZOPEN_CLEAN="zopen_clean"
 
+
+# 20231228 at this point ZOSLIB_HOME does not exist
 
 zopen_configure() {
- # ORIG IGOR  python3 build/gen.py --zoslib-dir `pwd`/third_party/zoslib
-  python build/gen.py --zoslib-dir $HOME/zopen/dev/zoslibport/zoslib
+  # ZOSLIB_HOME gets set when the dependecines are sourced in 
+  # zopen build dependecny phase.
+  python build/gen.py --zoslib-dir $ZOSLIB_HOME
 }
 zopen_build() {
+  # zopen build sets the number of cpus to set
+  # On uss, nproc gives number of cpu's.  This will
+  # num cpus divided by 2.
   ninja -C out -j $ZOPEN_NUM_JOBS -v
 }
 zopen_check() {
   ./out/gn_unittests
+}
+
+# This is for after the code is pulled from git 
+# and patches applied.
+zopen_clean() {
+  echo "gnport/buildenv:zopen_clean()"
+  echo "$ zopen build -f triggered this call"
+  echo "pwd: `pwd`"
+  git reset --hard
+  # TODO: (davis)
 }
 
 

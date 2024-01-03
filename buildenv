@@ -19,7 +19,20 @@ export ZOPEN_BUILD_LINE="DEV"
 #export ZOPEN_STABLE_DEPS="zoslib"
 export ZOPEN_RUNTIME_DEPS="bash"
 export ZOPEN_CATEGORIES="development"
-export ZOPEN_COMP=CLANG
+# If this is set, it will still use ibm-clang, even
+# if comp_clang is not specified as a dependecny.
+# It does this by zopen build auto adding comp_clang
+# as a dependency.
+#export ZOPEN_COMP=CLANG
+
+
+# Moving forward, comp_clang will use IBM C/C++ for Open Enterpise Languages on z/OS
+# https://epwt-www.mybluemix.net/software/support/trial/cst/programwebsite.wss?siteId=1803
+# this one is for open source projects only
+
+# Longer term, the compiler will migrate to the 1.Next compiler
+# https://epwt-www.mybluemix.net/software/support/trial/cst/programwebsite.wss?siteId=1990
+# this one is not limited by open source restrictions
 
 # These settings are for specifying custom build 
 # types other than configure and make.
